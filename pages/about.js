@@ -1,4 +1,3 @@
-import VideoBackground from "../components/VideoBackground";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,7 +5,6 @@ import Head from "next/head";
 
 export default function About() {
   return (
-    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />
     <>
       <Head>
         <title>About Liosh Token</title>

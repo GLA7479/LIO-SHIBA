@@ -1,4 +1,3 @@
-import VideoBackground from "../components/VideoBackground";
 import fs from "fs";
 import path from "path";
 
