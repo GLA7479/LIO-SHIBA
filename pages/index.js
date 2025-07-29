@@ -42,6 +42,7 @@ export default function Home() {
   return (
     <>
       {showContent && (
+
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
         {!videoError ? (
           <video
@@ -266,7 +267,7 @@ export default function Home() {
           ))}
         </div>
       </motion.section>
+      )}
     </>
   );
 }
-      )}
