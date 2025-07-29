@@ -1,3 +1,4 @@
+import VideoBackground from "../components/VideoBackground";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -5,6 +6,7 @@ export default function Staking() {
   const [amount, setAmount] = useState("");
 
   return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />
     <>
       <motion.main
         className="relative min-h-screen flex flex-col items-center justify-start p-4 pt-14 text-white"

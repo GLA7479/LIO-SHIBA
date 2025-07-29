@@ -1,3 +1,4 @@
+import VideoBackground from "../components/VideoBackground";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -23,6 +24,7 @@ export default function Gallery() {
     setSelectedIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
 
   return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />
     <>
       <motion.main
         className="relative min-h-screen flex flex-col items-center justify-center p-6 text-white"

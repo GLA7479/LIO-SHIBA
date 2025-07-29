@@ -1,3 +1,4 @@
+import VideoBackground from "../components/VideoBackground";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -26,7 +27,8 @@ export default function Home() {
       setRotate(true);
       setTimeout(() => setRotate(false), 1000);
     }, 5000);
-    return () => clearInterval(interval);
+    return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />) => clearInterval(interval);
   }, []);
 
   const fadeZoomIn = {

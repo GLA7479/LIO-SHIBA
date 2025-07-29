@@ -1,3 +1,4 @@
+import VideoBackground from "../components/VideoBackground";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { motion } from "framer-motion";
@@ -35,6 +36,7 @@ export default function Tokenomics() {
   };
 
   return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />
     <div className="relative min-h-screen text-white overflow-hidden">
       <video
         autoPlay

@@ -1,7 +1,9 @@
+import VideoBackground from "../components/VideoBackground";
 import { motion } from "framer-motion";
 
 export default function Contact() {
   return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />
     <>
       <motion.main
         className="relative min-h-screen flex flex-col items-center text-white p-6 pt-6 sm:pt-10"

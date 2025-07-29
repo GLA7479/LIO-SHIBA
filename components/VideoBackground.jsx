@@ -1,38 +1,38 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 
-export default function VideoBackground() {
+export default function VideoBackground({ src, poster }) {
+  const [isClient, setIsClient] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; // ✅ לא יטען בצד השרת
+
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full flex justify-center items-center -z-10 overflow-hidden bg-black"
+      className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden bg-black"
       style={{ pointerEvents: "none" }}
     >
-      <motion.div
-        animate={{ y: ["0%", "-10%", "0%"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="relative"
-        style={{
-          width: "100%",
-          maxWidth: "1920px",
-          height: "auto",
-          aspectRatio: "16/9",
-        }}
-      >
-        <video
-          src="/videos/background.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover rounded-lg"
-          style={{
-            maxHeight: "100vh",
-            width: "100% !important",
-            height: "auto !important",
-            objectFit: "cover !important",
-          }}
+      {!isLoaded && poster && (
+        <img
+          src={poster}
+          alt="background"
+          className="video-bg"
+          style={{ filter: "blur(2px)", transition: "opacity 0.5s" }}
         />
-      </motion.div>
+      )}
+
+      <video
+        className="video-bg"
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+        onLoadedData={() => setIsLoaded(true)}
+      />
     </div>
   );
 }

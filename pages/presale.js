@@ -1,3 +1,4 @@
+import VideoBackground from "../components/VideoBackground";
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
@@ -37,7 +38,8 @@ export default function Presale() {
       }
     }, 1000);
 
-    return () => clearInterval(interval);
+    return (
+    <VideoBackground src="/videos/background.mp4" poster="/images/poster.jpg" />) => clearInterval(interval);
   }, []);
 
   const tokensToReceive = amount ? (amount / price).toFixed(2) : 0;
