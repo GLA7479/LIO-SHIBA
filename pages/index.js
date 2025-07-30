@@ -1,251 +1,265 @@
-import Layout from "../components/Layout";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  const [activeVideo, setActiveVideo] = useState(null);
-  const [activeImage, setActiveImage] = useState(null);
+  const videoRef = useRef(null);
+  const [currentVideo, setCurrentVideo] = useState(0);
+  const [videoError, setVideoError] = useState(false);
+  const videos = ["/videos/home-bg1.mp4", "/videos/home-bg2.mp4"];
 
-  const images = [
-    { src: "/images/shiba1.jpg", alt: "Lio Shiba 1" },
-    { src: "/images/shiba2.jpg", alt: "Lio Shiba 2" },
-    { src: "/images/shiba3.jpg", alt: "Lio Shiba 3" },
-    { src: "/images/shiba4.jpg", alt: "Lio Shiba 4" },
-  ];
+  const [rotate, setRotate] = useState(false);
 
-  const tokenomics = [
-    { percent: "40%", label: "Presale" },
-    { percent: "30%", label: "Team & Advisors" },
-    { percent: "20%", label: "Staking Rewards" },
-    { percent: "10%", label: "Reserve" },
-  ];
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const logoAnimation = {
-    animate: {
-      rotate: [0, 360],
-      scale: [1, 1.1, 1],
-      filter: [
-        "drop-shadow(0px 0px 10px gold)",
-        "drop-shadow(0px 0px 20px orange)",
-        "drop-shadow(0px 0px 20px yellow)",
-        "drop-shadow(0px 0px 10px gold)",
-      ],
-    },
-    transition: { repeat: Infinity, duration: 5, ease: "linear" },
+    const video = videoRef.current;
+    if (video) {
+      video.onended = () => {
+        setCurrentVideo((prev) => (prev + 1) % videos.length);
+      };
+    }
+  }, [currentVideo]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotate(true);
+      setTimeout(() => setRotate(false), 1000);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fadeZoomIn = {
+    hidden: { opacity: 0, y: 60 },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <Layout page="home">
-      {/* 🔹 Hero Section */}
-      <section className="relative flex flex-col items-center text-center px-6 bg-gradient-to-b from-black via-gray-900 to-black pt-0 pb-6 -mt-6">
-        <motion.h1
-          className="mb-1 drop-shadow-lg leading-tight flex flex-col items-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="flex items-center gap-3">
-            <motion.div {...logoAnimation}>
-              <Image src="/images/logo2.png" alt="Liosh Logo Left" width={90} height={90} />
-            </motion.div>
-            <span className="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-              LIOSH
-            </span>
-            <motion.div {...logoAnimation}>
-              <Image src="/images/logo2.png" alt="Liosh Logo Right" width={90} height={90} />
-            </motion.div>
-          </span>
-          <span className="block text-2xl md:text-3xl lg:text-4xl mt-1 font-semibold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-md">
-            The Real Shiba Meme Coin
-          </span>
-        </motion.h1>
-
-        <div className="flex gap-4 mt-1">
-          <motion.video
-            autoPlay loop muted playsInline
-            onClick={() => setActiveVideo("left")}
-            className="w-60 h-60 rounded-xl shadow-lg cursor-pointer"
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <source src="/videos/left.mp4" type="video/mp4" />
-          </motion.video>
-
-          <motion.video
-            autoPlay loop muted playsInline
-            onClick={() => setActiveVideo("right")}
-            className="w-60 h-60 rounded-xl shadow-lg cursor-pointer"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <source src="/videos/right.mp4" type="video/mp4" />
-          </motion.video>
-        </div>
-
-        <motion.p
-          className="text-base md:text-lg text-gray-300 max-w-2xl mt-1 mb-3"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          Join the revolution of meme coins with real utility and real community.
-          Be an early part of the LIOSH movement!
-        </motion.p>
-
-        <motion.div
-          className="flex flex-col sm:flex-row gap-2"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <a
-            href="/presale"
-            className="bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-5 rounded-full text-lg font-semibold shadow-lg transition"
-          >
-            🚀 Join Presale
-          </a>
-          <a
-            href="/about"
-            className="bg-transparent border-2 border-yellow-500 hover:bg-yellow-500 hover:text-black text-yellow-500 py-2 px-5 rounded-full text-lg font-semibold transition"
-          >
-            Learn More
-          </a>
-        </motion.div>
-      </section>
-
-      {/* 🔹 Modal לסרטונים */}
-      {activeVideo && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setActiveVideo(null)}>
-          <motion.video
-            autoPlay loop muted playsInline
-            className="w-[80%] max-w-3xl rounded-xl shadow-2xl"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-          >
-            <source
-              src={activeVideo === "left" ? "/videos/left.mp4" : "/videos/right.mp4"}
-              type="video/mp4"
-            />
-          </motion.video>
-        </div>
-      )}
-
-      {/* 🔹 About Section + תמונות */}
-      <section className="py-16 bg-gradient-to-r from-gray-900 to-black text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-4xl font-bold text-yellow-500 mb-4">🐕 What is LIOSH?</h2>
-          <p className="text-gray-300 text-lg mb-6">
-            LIOSH is a next-gen meme coin inspired by Lio, the real Shiba Inu.
-            We combine fun, community, and real-world utility to create a token
-            that’s here to stay.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-            {images.map((img, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: i * 0.3 }}
-                whileHover={{ scale: 1.1 }}
-                className="relative cursor-pointer overflow-hidden rounded-2xl shadow-lg hover:shadow-yellow-400"
-                onClick={() => setActiveImage(img.src)}
-              >
-                <img src={img.src} alt={img.alt} className="w-full h-auto transition-transform duration-300" />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* 🔹 Modal לתמונות */}
-      <AnimatePresence>
-        {activeImage && (
-          <motion.div
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-            onClick={() => setActiveImage(null)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.img
-              key={activeImage}
-              src={activeImage}
-              alt="Fullscreen Lio"
-              className="rounded-2xl max-w-[90%] max-h-[90%] shadow-2xl"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              transition={{ duration: 0.4 }}
-            />
-          </motion.div>
+    <>
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+        {!videoError ? (
+          <video
+            key={currentVideo}
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            preload="none"
+            onError={() => setVideoError(true)}
+            className="absolute inset-0 w-full h-full object-cover -z-10"
+            src={videos[currentVideo]}
+          />
+        ) : (
+          <img
+            src="/images/home-fallback.jpg"
+            alt="Background"
+            className="absolute inset-0 w-full h-full object-cover -z-10"
+          />
         )}
-      </AnimatePresence>
 
-      {/* 🔹 Tokenomics */}
-      <section className="py-16 bg-black text-center">
-        <motion.h2
-          className="text-4xl font-bold text-yellow-500 mb-5"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <div className="absolute inset-0 bg-black bg-opacity-60 -z-10"></div>
+
+        <motion.div
+          className="relative z-10 max-w-3xl p-4 -mt-20 flex flex-col items-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+          variants={fadeZoomIn}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          📊 Tokenomics
-        </motion.h2>
-        <p className="text-gray-300 text-lg mb-8 max-w-3xl mx-auto">
-          A sustainable and fair token distribution designed to reward early
-          supporters and long-term holders.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-6 max-w-6xl mx-auto">
-          {tokenomics.map((item, i) => (
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <motion.img
+              src="/images/logo2.png"
+              alt="LIOSH Logo"
+              className="w-16 h-16 sm:w-20 sm:h-20"
+              whileHover={{ rotate: 360, scale: 1.2, transition: { duration: 1 } }}
+              animate={rotate ? { rotate: 360 } : {}}
+              transition={{ duration: 1 }}
+            />
+
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-normal"
+              style={{
+                backgroundImage: "linear-gradient(90deg, #facc15, #fbbf24, #facc15)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.3 }}
+              variants={fadeZoomIn}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            >
+              LIOSH TOKEN
+            </motion.h1>
+
+            <motion.img
+              src="/images/logo2.png"
+              alt="LIOSH Logo"
+              className="w-16 h-16 sm:w-20 sm:h-20"
+              whileHover={{ rotate: 360, scale: 1.2, transition: { duration: 1 } }}
+              animate={rotate ? { rotate: 360 } : {}}
+              transition={{ duration: 1 }}
+            />
+          </div>
+
+          <motion.p
+            className="text-lg sm:text-2xl text-gray-100 font-medium mb-8 leading-relaxed"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            variants={fadeZoomIn}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            The ultimate meme coin inspired by Shiba Inu! Join our presale and be part of the next crypto revolution.
+          </motion.p>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            variants={fadeZoomIn}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <Link href="/presale">
+              <button className="bg-yellow-400 px-8 py-4 rounded-lg font-bold text-xl hover:bg-yellow-500 transition animate-pulse shadow-lg shadow-yellow-500/50">
+                🚀 Join Presale
+              </button>
+            </Link>
+            <Link href="/staking">
+              <button className="bg-black border border-yellow-400 text-yellow-400 px-8 py-4 rounded-lg font-bold text-xl hover:bg-yellow-400 hover:text-black transition animate-pulse shadow-lg shadow-yellow-500/30">
+                💰 Stake Now
+              </button>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 🔹 STORY */}
+      <motion.section
+        className="relative py-20 text-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.3 }}
+        variants={fadeZoomIn}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      >
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div
+            className="mb-6 flex flex-col items-center justify-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            variants={fadeZoomIn}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <motion.img
+                src="/images/logo3.png"
+                alt="LIOSH Logo"
+                className="w-16 h-16 sm:w-20 sm:h-20"
+                whileHover={{ rotate: 360, scale: 1.2, transition: { duration: 1 } }}
+                animate={rotate ? { rotate: 360 } : {}}
+                transition={{ duration: 1 }}
+              />
+
+              <h2
+                className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 leading-normal"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #5ac8fa, #f472b6)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                THE STORY OF LIO
+              </h2>
+
+              <motion.img
+                src="/images/logo3.png"
+                alt="LIOSH Logo"
+                className="w-16 h-16 sm:w-20 sm:h-20"
+                whileHover={{ rotate: 360, scale: 1.2, transition: { duration: 1 } }}
+                animate={rotate ? { rotate: 360 } : {}}
+                transition={{ duration: 1 }}
+              />
+            </div>
+
+            <p
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mt-1 leading-normal"
+              style={{
+                backgroundImage: "linear-gradient(90deg, #5ac8fa, #f472b6)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              The Real Shiba Inu
+            </p>
+          </motion.div>
+
+          <motion.p
+            className="text-lg sm:text-2xl text-gray-100 font-medium mb-6 leading-relaxed"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            variants={fadeZoomIn}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            LIOSH is the ultimate meme coin inspired by our real Shiba Inu dog – <strong className="text-yellow-300">LIO</strong>. At just 3 years old, LIO has already become the heart and soul of this project. LIOSH is the only meme coin backed by a real Shiba Inu mascot, bringing fun and community power together!
+          </motion.p>
+
+          <motion.p
+            className="text-lg sm:text-2xl text-gray-200 font-medium leading-relaxed"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+            variants={fadeZoomIn}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            Our mission is to build a strong, community-driven cryptocurrency that celebrates the love for Shiba Inu while offering real-world utility, staking rewards, and exciting upcoming partnerships. Join us early and be part of LIO’s journey to the moon! 🚀
+          </motion.p>
+        </div>
+      </motion.section>
+
+      {/* 🔹 ROADMAP */}
+      <motion.section
+        className="bg-black text-gray-200 py-16"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.3 }}
+        variants={fadeZoomIn}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+      >
+        <h2 className="text-4xl sm:text-5xl text-amber-300 font-extrabold text-center mb-10">
+          🚀 Roadmap
+        </h2>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 text-center px-4">
+          {[
+            { title: "Phase 1", text: "Token Launch, Website, Community Building" },
+            { title: "Phase 2", text: "Presale Stages, Marketing Campaigns" },
+            { title: "Phase 3", text: "Exchange Listings, Staking Launch" },
+            { title: "Phase 4", text: "Major Partnerships & Metaverse Utility" },
+          ].map((item, i) => (
             <motion.div
               key={i}
-              className="bg-gray-800 rounded-xl p-5 shadow-lg hover:scale-105 transition-transform"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: i * 0.2 }}
+              className="p-6 bg-gray-800 rounded-lg shadow-lg"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.3 }}
+              variants={fadeZoomIn}
+              transition={{ duration: 1.2, ease: "easeOut", delay: i * 0.2 }}
             >
-              <h3 className="text-3xl font-extrabold text-yellow-500">{item.percent}</h3>
-              <p className="text-xl text-gray-300">{item.label}</p>
+              <h3 className="text-2xl font-bold mb-3 text-amber-300">{item.title}</h3>
+              <p className="text-lg sm:text-xl text-gray-100 leading-relaxed font-medium">
+                {item.text}
+              </p>
             </motion.div>
           ))}
         </div>
-      </section>
-
-      {/* 🔹 CTA */}
-      <section className="py-16 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black text-center">
-        <motion.h2
-          className="text-4xl font-extrabold mb-3"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Be Part of the LIOSH Journey 🚀
-        </motion.h2>
-        <motion.p
-          className="text-lg mb-5 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          Secure your place in the future of meme coins with real value and
-          strong community support.
-        </motion.p>
-        <a
-          href="/presale"
-          className="bg-black text-yellow-500 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-gray-900 transition"
-        >
-          Join Presale Now
-        </a>
-      </section>
-    </Layout>
+      </motion.section>
+    </>
   );
 }
